@@ -1,0 +1,29 @@
+
+
+.schedule, th {
+  min-width: 150px !important;
+}
+
+.schedule {
+  width: 75% !important;
+}
+
+body {
+  text-align: center;
+}
+
+table {
+  margin: auto;
+  margin-top: 20px;
+  border: 1px solid grey;
+  border-collapse: collapse;
+}
+
+td {
+  border: 1px solid grey;
+  border-collapse: collapse;
+}
+
+#mbta-app {
+  margin-top: 50px;
+}

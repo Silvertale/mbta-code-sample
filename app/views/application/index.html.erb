@@ -1,0 +1,69 @@
+<div ng-app="mbta_app" id="mbta-app">
+  <div ng-controller="mbta_controller">
+
+    Destination: <select id="destination" ng-model="void1" onchange="angular.element(this).scope().display();">
+      <option selected></option>
+      <option ng-repeat="destination in destinationChoices">{{destination}}</option>
+    </select>
+
+    Scheduled Time: <select id="scheduledTime" ng-model="void2" onchange="angular.element(this).scope().display();">
+      <option selected></option>
+      <option ng-repeat="time in timeChoices">{{time}}</option>
+    </select>
+    <table class="schedule">
+      <th>Destination</th><th>Scheduled Time</th><th>Lateness (minutes)</th><th>Track</th>
+    <tr ng-repeat="obj in displayData">
+        <td>{{obj.destination}}</td><td>{{obj.scheduledtime}}</td><td>{{obj.lateness/60}}</td><td>{{obj.track}}</td>
+    </tr>
+    </table>
+  </div>
+</div>
+
+
+<script>
+
+var app = angular.module('mbta_app', []);
+
+app.controller('mbta_controller', function mbta_controller($scope) {
+  $scope.departures = <%= @departures_string.html_safe %>; //inject departures directly from ruby env.
+  $scope.displayData = null;
+
+  //make unique list of departures and times to use in dropdowns
+  $scope.destinationChoices = []
+  $scope.timeChoices = []
+
+  for(var i = 0; i < $scope.departures.length; i++){
+    if(!$scope.destinationChoices.includes($scope.departures[i].destination)){
+      $scope.destinationChoices.push($scope.departures[i].destination)
+    }
+  }
+  $scope.destinationChoices.sort();
+
+  for(var i = 0; i < $scope.departures.length; i++){
+    if(!$scope.timeChoices.includes($scope.departures[i].scheduledtime)){
+      $scope.timeChoices.push($scope.departures[i].scheduledtime)
+    }
+  }
+
+
+$scope.display = function(){
+  var destination = $('#destination option:selected').text();
+  var scheduledTime = $('#scheduledTime option:selected').text();
+  $scope.displayData = [];
+  for(var i = 0; i < $scope.departures.length; i++){
+    if((destination == "" || $scope.departures[i].destination == destination) && (scheduledTime == "" || $scope.departures[i].scheduledtime == scheduledTime)){
+      $scope.displayData.push($scope.departures[i]);
+    }
+  }
+}
+
+$scope.display();
+
+});
+
+
+
+
+
+
+</script>
